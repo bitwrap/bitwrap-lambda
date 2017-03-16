@@ -42,6 +42,6 @@ def handler(event, context):
     res = _lambda.handler(event, context)
 
     if event['path'] == '/api' and 'body' in res:
-        post(res['body'], schema=event['pathParameters']['schema'])
+        post(res['body'], schema=event['body']['params'][0]['schema'])
 
     return res
