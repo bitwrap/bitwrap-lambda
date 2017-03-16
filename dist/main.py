@@ -14,6 +14,7 @@ https://github.com/bitwrap/bitwrap-io/blob/master/bitwrap_io/_lambda.py
 
 import requests
 import os
+import ujson as json
 from bitwrap_io import _lambda
 
 WRITE_KEY =  os.environ.get('KEEN_API_KEY', None)
@@ -26,7 +27,6 @@ def post(body, schema='bitwrap'):
     if PROJECT:
 
         uri = (API_URL % ( PROJECT, schema )).encode('latin-1')
-        print uri
 
         return requests.post(
             uri,
@@ -42,6 +42,10 @@ def handler(event, context):
     res = _lambda.handler(event, context)
 
     if event['path'] == '/api' and 'body' in res:
-        post(res['body'], schema=event['body']['params'][0]['schema'])
+        # XXX: deserializing jason again
+        # ? instead should add & tap into a header? x-bitwrap-schema: 'counter' ?
+        _schema = json.loads(event['body'])['params'][0]['schema']
+        post(res['body'], schema=_schema)
+
 
     return res
