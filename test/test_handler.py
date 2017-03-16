@@ -3,11 +3,12 @@ import os
 import sys
 import json
 from twisted.internet import defer
-import bitwrap_io._lambda as Api
 from twisted.trial.unittest import TestCase
 
 sys.path.append(os.path.abspath(__file__ + '/../'))
 import mocks
+sys.path.append(os.path.abspath(__file__ + '/../../dist'))
+import main as Api
 
 class LamdaTest(TestCase):
     """ test api methods not dealing with events"""

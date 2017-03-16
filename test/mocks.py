@@ -65,7 +65,7 @@ API_POST = {
       "Accept-Encoding": "gzip, deflate, sdch"
     },
     "pathParameters": {
-      "proxy": "api"
+      "schema": "counter"
     },
     "httpMethod": "POST",
     "stageVariables": {
