@@ -8,8 +8,8 @@ Learn more: http://bitwrap.io
 
 #### install
 
-On AWS this repo uploads a single lambda function that is then (manually)
-configured as a target from Amazon API Gateway.
+Travis.ci job creates a lambda function that is then (manually)
+configured as a target from Amazon API Gateway using the included swagger.yaml'
 
 #### run locally
 
@@ -19,11 +19,6 @@ Set env vars:
     export RDS_DB=bitwrap
     export RDS_USER=postgres
     export RDS_PASS=bitwrap
-
-Drop & Create db
-
-    # XXX THIS WILL DROP THE EXISTING DB!! XXX
-    python -m bitwrap_io.storage.sql
 
 Run test
 
