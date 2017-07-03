@@ -16,11 +16,9 @@ class LamdaTest(unittest.TestCase):
         """ test a sequence of tic-tac-toe transformations """
 
         res = Api.handler(mocks.API_POST, {})
-        print json.loads(res)['event']
-
-        # KLUDGE: do an actual test
-        #self.assertTrue(data['error'] is None)
-        #print json.dumps(data, indent=4)
+        data = json.loads(res['body'])
+        print json.dumps(data, indent=4)
+        self.assertTrue(data.get('__err__', None) is None)
 
 if __name__ == '__main__':
     unittest.main()

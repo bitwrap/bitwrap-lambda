@@ -12,27 +12,30 @@ export KEEN_API_KEY='xxxxxxxx...xxxxxxxxxxxxxxx'
 import requests
 import os
 import json
-#from bitwrap_io.rpc import eventstore, call
 import bitwrap_machine as pnml
 from bitwrap_machine import ptnet
+import bitwrap_psql as psql
 
 WRITE_KEY =  os.environ.get('KEEN_API_KEY', None)
 PROJECT =  os.environ.get('KEEN_PROJECT', None)
 API_URL = 'http://api.keen.io/3.0/projects/%s/events/%s'
 
 options = {
-    'pg-host': '127.0.0.1',
-    'pg-port': 5432,
-    'pg-username': 'postgres',
-    'pg-password': 'bitwrap',
-    'pg-database': 'bitwrap'
+    'pg-host': os.environ.get('RDS_HOST', '127.0.0.1'),
+    'pg-port': os.environ.get('RDS_PORT', 5432),
+    'pg-username': os.environ.get('RDS_USER', 'postgres'),
+    'pg-password': os.environ.get('RDS_PASS', 'bitwrap'),
+    'pg-database': os.environ.get('RDS_DB', 'bitwrap')
 }
 
+def eventstore(schema):
+    """ get eventstore handle """
+    return psql.Storage(schema, **options)
 
-def post(body, schema='bitwrap'):
+def post(body, schema):
     """ forward event to keen.io """
 
-    if PROJECT:
+    if PROJECT is not None:
         pass
 
     uri = (API_URL % ( PROJECT, schema )).encode('latin-1')
@@ -46,15 +49,32 @@ def post(body, schema='bitwrap'):
         data=body
     )
 
-# TODO: convert this to a handler in the same style as bitwrap-io.api.rpc
+
+def success(body):
+    return {
+        "statusCode": 200,
+        "headers": {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+        },
+        "body": json.dumps(body)
+    } 
+
+
+# TODO: convert to hacked up dispatch similar to bitwrap_io.api.rpc
 def handler(event, context):
     """ handle events routed from gateway api """
+    
+    if 'body' in event and event['body'] is not None:
+        data = event['body']
+    else:
+        data = '{}'
+        
+    epp = event['pathParameters']
+    res = eventstore(epp['schema']).commit({
+        'oid': epp['oid'],
+        'action': epp['action'],
+        'payload': data
+    })
 
-    #res = _lambda.handler(event, context)
-    #if event['path'] == '/api' and 'body' in res:
-    #    _schema = json.loads(event['body'])['params'][0]['schema']
-    #    post(res['body'], schema=_schema)
-    print event
-    print context
-
-    return json.dumps({ 'event': event, 'context': context })
+    return success(res)

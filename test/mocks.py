@@ -65,7 +65,9 @@ API_POST = {
       "Accept-Encoding": "gzip, deflate, sdch"
     },
     "pathParameters": {
-      "schema": "counter"
+      "schema": "counter",
+      "oid": "foo",
+      "action": "INC_0"
     },
     "httpMethod": "POST",
     "stageVariables": {
