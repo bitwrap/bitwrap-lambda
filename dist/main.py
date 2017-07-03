@@ -50,13 +50,11 @@ def post(body, schema='bitwrap'):
 def handler(event, context):
     """ handle events routed from gateway api """
 
-    res = _lambda.handler(event, context)
+    #res = _lambda.handler(event, context)
+    #if event['path'] == '/api' and 'body' in res:
+    #    _schema = json.loads(event['body'])['params'][0]['schema']
+    #    post(res['body'], schema=_schema)
+    print event
+    print context
 
-    if event['path'] == '/api' and 'body' in res:
-        # XXX: deserializing jason again
-        # ? instead should add & tap into a header? x-bitwrap-schema: 'counter' ?
-        _schema = json.loads(event['body'])['params'][0]['schema']
-        post(res['body'], schema=_schema)
-
-
-    return res
+    return json.dumps({ 'event': event, 'context': context })
