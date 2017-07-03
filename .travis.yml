@@ -5,7 +5,7 @@ before_script:
   - psql -c "ALTER USER postgres WITH password 'bitwrap'" -U postgres
   - ./.travis.sh
 script:
-  - python test/test_api.py
+  - python test/test_handler.py
 deploy:
   provider: lambda
   function_name: bitwrap-dev
