@@ -5,13 +5,12 @@ addons:
   postgresql: "9.4"
 before_script:
   - psql -c "ALTER USER postgres WITH password 'bitwrap'" -U postgres
-env:
-  - PYTHONPATH=./
+  - ./travis.sh
 script:
   - python test/test_api.py
 deploy:
   provider: lambda
-  function_name: bitwrap-lambda-dev
+  function_name: bitwrap-dev
   role: arn:aws:iam::639065871029:role/jsonrpc-gateway
   module_name: main
   handler_name: handler

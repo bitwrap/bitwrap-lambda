@@ -2,15 +2,14 @@
 import os
 import sys
 import json
-from twisted.internet import defer
-from twisted.trial.unittest import TestCase
+import unittest
 
 sys.path.append(os.path.abspath(__file__ + '/../'))
 import mocks
 sys.path.append(os.path.abspath(__file__ + '/../../dist'))
 import main as Api
 
-class LamdaTest(TestCase):
+class LamdaTest(unittest.TestCase):
     """ test api methods not dealing with events"""
 
     def test_lambda_handler(self):
@@ -21,3 +20,6 @@ class LamdaTest(TestCase):
 
         self.assertTrue(data['error'] is None)
         print json.dumps(data, indent=4)
+
+if __name__ == '__main__':
+    unittest.main()

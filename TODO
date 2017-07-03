@@ -1,6 +1,8 @@
 Mon Jul  3 10:22:20 CDT 2017
 
 * deploy on aws_lambda + Api Gateway
+  * use this trick to build a simple router:
+    * https://github.com/bitwrap/bitwrap-io/blob/master/bitwrap_io/rpc.py#L15
 
 BACKLOG:
 ========
