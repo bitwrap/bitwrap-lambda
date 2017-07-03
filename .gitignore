@@ -90,3 +90,5 @@ ENV/
 *.rc
 _trial*
 .venv
+*.env
+.env

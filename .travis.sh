@@ -12,4 +12,4 @@ pip install -e git+https://github.com/bitwrap/bitwrap-psql.git#egg=bitwrap-psql
 cp -r $VIRTUAL_ENV/src/bitwrap-machine/bitwrap_machine  dist/
 cp -r $VIRTUAL_ENV/src/bitwrap-psql/bitwrap_psql  dist/
 
-pip install -t $PWD/dist requests
+pip install -t $PWD/dist -r requirements.txt
