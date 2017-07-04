@@ -61,10 +61,15 @@ def success(body):
     } 
 
 def dispatch_route(store, event, params):
+    payload = event.get('body')
+
+    if payload == '' or payload is None:
+        payload = "{}"
+
     return store.commit({
         'oid': params['oid'],
         'action': params['action'],
-        'payload': event.get('body')
+        'payload': payload
     })
 
 def event_route(store, event, params):
