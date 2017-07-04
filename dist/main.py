@@ -20,7 +20,7 @@ WRITE_KEY =  os.environ.get('KEEN_API_KEY', None)
 PROJECT =  os.environ.get('KEEN_PROJECT', None)
 API_URL = 'http://api.keen.io/3.0/projects/%s/events/%s'
 
-options = {
+OPTIONS = {
     'pg-host': os.environ.get('RDS_HOST', '127.0.0.1'),
     'pg-port': os.environ.get('RDS_PORT', 5432),
     'pg-username': os.environ.get('RDS_USER', 'postgres'),
@@ -30,7 +30,7 @@ options = {
 
 def eventstore(schema):
     """ get eventstore handle """
-    return psql.Storage(schema, **options)
+    return psql.Storage(schema, **OPTIONS)
 
 def post(body, schema):
     """ forward event to keen.io """
@@ -60,21 +60,45 @@ def success(body):
         "body": json.dumps(body)
     } 
 
-
-# TODO: convert to hacked up dispatch similar to bitwrap_io.api.rpc
-def handler(event, context):
-    """ handle events routed from gateway api """
-    
-    if 'body' in event and event['body'] is not None:
-        data = event['body']
-    else:
-        data = '{}'
-        
-    epp = event['pathParameters']
-    res = eventstore(epp['schema']).commit({
-        'oid': epp['oid'],
-        'action': epp['action'],
-        'payload': data
+def dispatch_route(store, event, params):
+    return store.commit({
+        'oid': params['oid'],
+        'action': params['action'],
+        'payload': event.get('body')
     })
 
-    return success(res)
+def event_route(store, event, params):
+    return store.db.events.fetch(params['eventid'])
+
+def stream_route(store, event, params):
+    return store.db.events.fetchall(params['streamid'])
+
+def machine_route(store, event, params):
+    machine = pnml.Machine(params['schema'])
+    return {'machine':{
+               'name': params['schema'],
+               'places': machine.net.places,
+               'transitions': machine.net.transitions}}
+
+def schemata_route(store, event, params):
+    return {'schemata': ptnet.schema_list()}
+
+def state_route(store, event, params):
+    return store.db.states.fetch(params['oid'])
+
+def handler(event, context):
+    """ handle events routed from gateway api """
+    func = event['resource'].split('/')[1] + '_route'
+    epp = event.get('pathParameters')
+
+    if epp is None:
+        epp = {}
+
+    schema = epp.get('schema')
+
+    if schema:
+        store = eventstore(schema)
+    else:
+        store = None
+
+    return success(globals()[func](store, event, epp))
