@@ -60,6 +60,33 @@ def success(body):
         "body": json.dumps(body)
     } 
 
+def rpc_schema_exists(schema):
+    """ test that an event-machine schema exists """
+    return eventstore(schema).db.schema_exists()
+
+def rpc_schema_create(schema):
+    """ test that an event-machine schema exists """
+    machine = pnml.Machine(schema)
+    try:
+        pg.create_schema(machine, **settings)
+    except:
+        pass
+
+    return rpc_schema_exists(schema)
+
+def rpc_schema_destroy(schema):
+    """ test that an event-machine schema exists """
+    pg.drop_schema(schema, **settings)
+
+def rpc_stream_exists(schema, oid):
+    """ test that a stream exists """
+    return eventstore(schema).db.stream_exists(oid)
+
+
+def rpc_stream_create(schema, oid):
+    """ create a new stream if it doesn't exist """
+    return eventstore(schema).db.create_stream(oid)
+
 def dispatch_route(store, event, params):
     payload = event.get('body')
 
@@ -93,6 +120,20 @@ def state_route(store, event, params):
 
 def handler(event, context):
     """ handle events routed from gateway api """
+
+    if event['resource'] == '/api':
+        res = {}
+        try:
+            rpc = json.loads(event['body'])
+            res['id'] = rpc.get('id')
+            func = 'rpc_' + rpc['method']
+            res['result'] = globals()[func](*rpc['args'])
+            res['error'] = None
+        except Exception as (ex):
+            res['error'] = ex.message
+
+        return success(res)
+
     func = event['resource'].split('/')[1] + '_route'
     epp = event.get('pathParameters')
 

@@ -26,11 +26,18 @@ class LamdaTest(unittest.TestCase):
     def setUp(self):
         pg.create_db(pnml.Machine('counter'), drop=True, **Api.OPTIONS)
         self.store = Api.eventstore('counter')
-        self.store.db.create_stream('foo')
-
 
     def test_event_sequence(self):
         """ test a sequence of tic-tac-toe transformations """
+
+        # create stream
+        data = execute(mocks.event(**{
+            'body': { "method": "stream_create", "args": [ "counter", "foo"] },
+            'resource': '/api',
+            'method': 'POST',
+            'path': '/api',
+            'pathparams': None
+        }))
 
         # read machine list
         execute(mocks.event(**{

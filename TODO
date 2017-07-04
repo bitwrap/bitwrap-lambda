@@ -1,19 +1,18 @@
-Mon Jul  3 13:42:23 CDT 2017
+Mon Jul  3 23:53:22 CDT 2017
 
-WIP - testing on aws Lambda
-NOTE: add reminders about having to open up default security groups or to use VPC with RDS and Gateway/Lambda
+* Add Admin/ RPC functions
 
 BACKLOG:
 ========
-
-* use this trick to build a simple router:
-  * https://github.com/bitwrap/bitwrap-io/blob/master/bitwrap_io/rpc.py#L15
-
 * test for beta release
-  * release to bitwrap.github.io
+  * test w/ UI integration
+* release to bitwrap.github.io
+
 
 ICEBOX:
 =======
+* improve README
+  * add reminders about having to open up default security groups or to use VPC with RDS and Gateway/Lambda
 * support authentiaction w/ AWS gateway api + cognito
   * could we drive this entirely at the DB level?
     * ? add a permission assert to before trigger
