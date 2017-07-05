@@ -32,7 +32,7 @@ class LamdaTest(unittest.TestCase):
 
         # create stream
         data = execute(mocks.event(**{
-            'body': { "method": "stream_create", "args": [ "counter", "foo"] },
+            'body': { "method": "stream_create", "params": [ "counter", "foo"] },
             'resource': '/api',
             'method': 'POST',
             'path': '/api',

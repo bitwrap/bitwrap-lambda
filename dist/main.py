@@ -127,7 +127,7 @@ def handler(event, context):
             rpc = json.loads(event['body'])
             res['id'] = rpc.get('id')
             func = 'rpc_' + rpc['method']
-            res['result'] = globals()[func](*rpc['args'])
+            res['result'] = globals()[func](*rpc['params'])
             res['error'] = None
         except Exception as (ex):
             res['error'] = ex.message
