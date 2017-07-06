@@ -87,8 +87,8 @@ def rpc_stream_create(schema, oid):
 def dispatch_route(store, event, params):
     payload = str(event.get('body'))
 
-    if payload.startswith('payload='):
-        data = payload[8:]
+    if payload.startswith('json='):
+        data = payload[5:]
     elif payload == '':
         data = "{}"
     else:
@@ -127,8 +127,8 @@ def handler(event, context):
         payload = str(event.get('body'))
 
         try:
-            if payload.startswith('rpc='):
-                rpc = json.loads(payload[4:])
+            if payload.startswith('json='):
+                rpc = json.loads(payload[5:])
             else:
                 rpc = json.loads(payload)
 
