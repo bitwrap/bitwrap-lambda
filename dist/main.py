@@ -67,16 +67,13 @@ def rpc_schema_exists(schema):
 def rpc_schema_create(schema):
     """ test that an event-machine schema exists """
     machine = pnml.Machine(schema)
-    try:
-        pg.create_schema(machine, **settings)
-    except:
-        pass
-
+    psql.db.create_schema(machine, **OPTIONS)
     return rpc_schema_exists(schema)
 
 def rpc_schema_destroy(schema):
     """ test that an event-machine schema exists """
-    pg.drop_schema(schema, **settings)
+    psql.db.drop_schema(schema, **OPTIONS)
+    return not rpc_schema_exists(schema)
 
 def rpc_stream_exists(schema, oid):
     """ test that a stream exists """
@@ -88,15 +85,19 @@ def rpc_stream_create(schema, oid):
     return eventstore(schema).db.create_stream(oid)
 
 def dispatch_route(store, event, params):
-    payload = event.get('body')
+    payload = str(event.get('body'))
 
-    if payload == '' or payload is None:
-        payload = "{}"
+    if payload.startswith('payload='):
+        data = payload[8:]
+    elif payload == '':
+        data = "{}"
+    else:
+        data = payload
 
     return store.commit({
         'oid': params['oid'],
         'action': params['action'],
-        'payload': payload
+        'payload': data
     })
 
 def event_route(store, event, params):
@@ -123,8 +124,14 @@ def handler(event, context):
 
     if event['resource'] == '/api':
         res = {}
+        payload = str(event.get('body'))
+
         try:
-            rpc = json.loads(event['body'])
+            if payload.startswith('rpc='):
+                rpc = json.loads(payload[4:])
+            else:
+                rpc = json.loads(payload)
+
             res['id'] = rpc.get('id')
             func = 'rpc_' + rpc['method']
             res['result'] = globals()[func](*rpc['params'])
