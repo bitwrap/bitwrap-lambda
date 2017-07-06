@@ -1,24 +1,13 @@
 """
 Lambda handler for bitwrap gateway api
-Forwards transform events to keen.io
-
-Configure by setting env vars:
-
-export KEEN_PROJECT='aaaaaaaaaaaaaaaaaaaaaaaa'
-export KEEN_API_KEY='xxxxxxxx...xxxxxxxxxxxxxxx'
-
+Configure by setting the RDS_* env vars in the OPTIONS below
 """
 
-import requests
 import os
 import json
 import bitwrap_machine as pnml
 from bitwrap_machine import ptnet
 import bitwrap_psql as psql
-
-WRITE_KEY =  os.environ.get('KEEN_API_KEY', None)
-PROJECT =  os.environ.get('KEEN_PROJECT', None)
-API_URL = 'http://api.keen.io/3.0/projects/%s/events/%s'
 
 OPTIONS = {
     'pg-host': os.environ.get('RDS_HOST', '127.0.0.1'),
@@ -31,24 +20,6 @@ OPTIONS = {
 def eventstore(schema):
     """ get eventstore handle """
     return psql.Storage(schema, **OPTIONS)
-
-def post(body, schema):
-    """ forward event to keen.io """
-
-    if PROJECT is not None:
-        pass
-
-    uri = (API_URL % ( PROJECT, schema )).encode('latin-1')
-
-    return requests.post(
-        uri,
-        headers={
-            'Authorization': WRITE_KEY,
-            'Content-Type': 'application/json'
-        },
-        data=body
-    )
-
 
 def success(body):
     return {
