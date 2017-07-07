@@ -35,10 +35,16 @@ def rpc_schema_exists(schema):
     """ test that an event-machine schema exists """
     return eventstore(schema).db.schema_exists()
 
-def rpc_schema_create(schema):
+def rpc_schema_create(schema, *args):
     """ test that an event-machine schema exists """
     machine = pnml.Machine(schema)
-    psql.db.create_schema(machine, **OPTIONS)
+
+    if args[0] is None:
+        name = schema
+    else:
+        name = args[0]
+
+    psql.db.create_schema(machine, schema_name=name, **OPTIONS)
     return rpc_schema_exists(schema)
 
 def rpc_schema_destroy(schema):
@@ -106,7 +112,6 @@ def handler(event, context):
             res['id'] = rpc.get('id')
             func = 'rpc_' + rpc['method']
             res['result'] = globals()[func](*rpc['params'])
-            res['error'] = None
         except Exception as (ex):
             res['error'] = ex.message
 

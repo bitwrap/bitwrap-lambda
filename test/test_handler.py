@@ -8,6 +8,7 @@ import bitwrap_machine as pnml
 
 sys.path.append(os.path.abspath(__file__ + '/../'))
 import mocks
+
 sys.path.append(os.path.abspath(__file__ + '/../../dist'))
 import main as Api
 
@@ -24,7 +25,8 @@ class LamdaTest(unittest.TestCase):
     """ test api methods not dealing with events"""
 
     def setUp(self):
-        pg.create_db(pnml.Machine('counter'), drop=True, **Api.OPTIONS)
+        pg.recreate_db(**Api.OPTIONS)
+        pg.create_schema(pnml.Machine('counter'), drop=False, **Api.OPTIONS)
         self.store = Api.eventstore('counter')
 
     def test_event_sequence(self):
