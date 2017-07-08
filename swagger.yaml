@@ -1,0 +1,128 @@
+---
+swagger: "2.0"
+info:
+  version: "2017-03-07T06:52:18Z"
+  title: "bitwrap-dev"
+host: "jo0e8cqcyb.execute-api.us-east-1.amazonaws.com"
+basePath: "/dev"
+schemes:
+- "https"
+paths:
+  /api:
+    post:
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /dispatch/{schema}/{oid}/{action}:
+    post:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "action"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "oid"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "schema"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /event/{schema}/{eventid}:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventid"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "schema"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /machine/{schema}:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "schema"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+  /schemata:
+    get:
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /state/{schema}/{oid}:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "oid"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "schema"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+  /stream/{schema}/{streamid}:
+    get:
+      produces:
+      - "application/json"
+      parameters:
+      - name: "schema"
+        in: "path"
+        required: true
+        type: "string"
+      - name: "streamid"
+        in: "path"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "200 response"
+          schema:
+            $ref: "#/definitions/Empty"
+          headers:
+            Access-Control-Allow-Origin:
+              type: "string"
+definitions:
+  Empty:
+    type: "object"
+    title: "Empty Schema"

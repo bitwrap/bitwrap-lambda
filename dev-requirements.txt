@@ -1,0 +1,3 @@
+-e git+https://github.com/bitwrap/bitwrap-machine.git#egg=bitwrap-machine
+-e git+https://github.com/bitwrap/bitwrap-psql.git#egg=bitwrap-psql
+-r requirements.txt

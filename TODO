@@ -1,0 +1,22 @@
+Mon Jul  3 23:53:22 CDT 2017
+
+* Add Admin/ RPC functions
+
+BACKLOG:
+========
+* test for beta release
+  * test w/ UI integration
+* release to bitwrap.github.io
+
+
+ICEBOX:
+=======
+* improve README
+  * add reminders about having to open up default security groups or to use VPC with RDS and Gateway/Lambda
+* support authentiaction w/ AWS gateway api + cognito
+  * could we drive this entirely at the DB level?
+    * ? add a permission assert to before trigger
+
+* try out https://github.com/Miserlou/Zappa
+  as a means of deploying an eventstore to AWS
+
